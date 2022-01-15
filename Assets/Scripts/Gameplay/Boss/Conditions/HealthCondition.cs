@@ -6,8 +6,8 @@ using UnityEngine;
 public class HealthCondition : BaseCondition
 {
     private Health _healthComp = null;
-    private int _allPhaseNum = 0;
-    private bool _hasAllPhaseNum = false;
+    private bool _addedVisual = false;
+
     public override List<Requirements> GetRequirements()
     {
         return new List<Requirements>() {Requirements.PieceIndex,Requirements.Origin};
@@ -17,26 +17,40 @@ public class HealthCondition : BaseCondition
     { 
         base.Setup(board,initList);
         _healthComp = board.GetValue<GameObject>(initList[2]).GetComponent<Health>();
-        if (initList.Count > 3)
-        {
-            _phaseNum = 0;
-        }
     }
 
     public override bool TestCondition()
     {
-        if (!_hasAllPhaseNum)
+        if (!_isMovementCondition)
         {
-            int AllPhaseNum = 0;
-            do
+            if (!CheckPrerequisites())
             {
-                AllPhaseNum++;
-            } while (_board.DoesValueExist(ConditionAcces + _main + _secundary + AllPhaseNum));
-
-            _hasAllPhaseNum = true;
+                if (!_addedVisual)
+                {
+                    _addedVisual = true;
+                    _healthComp.Visual.SetHealthCondition((float)(_allPhaseNum - (_phaseNum + 1)) / (float)_allPhaseNum);
+                }
+                return false;
+            }
+            else
+            {
+                if (!_addedVisual)
+                {
+                    _addedVisual = true;
+                    _healthComp.Visual.SetHealthCondition((float)(_allPhaseNum - (_phaseNum + 1)) / (float)_allPhaseNum);
+                }
+            }
         }
 
-        if ((_healthComp.CurrentHealth / _healthComp.MaxHealth) > (_phaseNum / (_allPhaseNum + 1)))
+
+
+        float healthThreshold = ((float) (_allPhaseNum - (_phaseNum + 1)) / (float) _allPhaseNum);
+        if (_isMovementCondition)
+        {
+            healthThreshold = 0;
+        }
+
+        if (((float)_healthComp.CurrentHealth / (float)_healthComp.MaxHealth) > healthThreshold)
         {
             if (_personalAcces != "")
             {
@@ -53,5 +67,10 @@ public class HealthCondition : BaseCondition
             }
             return false;
         }
+    }
+
+    public override void SetupScripted(BaseCondition condition)
+    {
+        //nothing to setup from scriptable object
     }
 }

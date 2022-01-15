@@ -9,7 +9,8 @@ public enum Requirements
     Target,
     Origin,
     MovementOrigin,
-    PieceIndex
+    PieceIndex,
+    OtherRandom
 }
 
 abstract public class BaseAbility : ScriptableObject

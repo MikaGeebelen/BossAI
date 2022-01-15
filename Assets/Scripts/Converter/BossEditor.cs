@@ -46,7 +46,7 @@ public class BossEditor : MonoBehaviour
                         def.Setup(_bossBuilder, nodeInfo, _bossBuilder.AbilityTypes);
                         break;
                     case NodeFill.Condition:
-                        def.Setup(_bossBuilder, nodeInfo, new List<object>());
+                        def.Setup(_bossBuilder, nodeInfo, _bossBuilder.ConditionTypes);
                         break;
                 }
             }

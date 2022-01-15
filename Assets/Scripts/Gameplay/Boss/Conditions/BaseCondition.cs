@@ -12,9 +12,13 @@ abstract public class BaseCondition: ScriptableObject
     protected BlackBoard _board = null;
 
     protected int _phaseNum = 0;
+    protected int _allPhaseNum = 0;
+    protected bool _hasAllPhaseNum = false;
 
     protected int _main = 0;
     protected int _secundary = 0;
+
+    protected bool _isMovementCondition = false;
 
     abstract public List<Requirements> GetRequirements();
 
@@ -24,8 +28,9 @@ abstract public class BaseCondition: ScriptableObject
 
         if (int.TryParse(initList[0],out int result))
         {
-            if (initList.Count > 3 && initList[3] == "IsMovement")
+            if (initList[initList.Count-1] == "IsMovement")
             {
+                _isMovementCondition = true;
                 return;
             }
 
@@ -53,4 +58,35 @@ abstract public class BaseCondition: ScriptableObject
         _board.AddValue(_personalAcces, false);
     }
     abstract public bool TestCondition();
+
+    abstract public void SetupScripted(BaseCondition condition);
+
+    protected virtual bool CheckPrerequisites()
+    {
+        if (!_hasAllPhaseNum)
+        {
+            do
+            {
+                _allPhaseNum++;
+            } while (_board.DoesValueExist(ConditionAcces + _main + _secundary + _allPhaseNum));
+
+            _hasAllPhaseNum = true;
+        }
+
+        for (int i = 0; i < _phaseNum; i++)
+        {
+            if (_board.GetValue<bool>(ConditionAcces + _main + _secundary + i))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public virtual KeyValuePair<int, int> GetOther()
+    {
+        return new KeyValuePair<int, int>(-1, -1);
+    } 
+
 }

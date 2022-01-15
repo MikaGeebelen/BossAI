@@ -27,7 +27,8 @@ public struct NodeInfo
     public NodeFill Type;
     public int CurrentValue;
     public Type ObjectType;
-
+    public int OtherMain;//a node might point to other info than itself
+    public int OtherSecundary;
     public bool IsOwnedByPiece(int main, int secundary)
     {
         if (main == MainPiece && secundary == SecundaryPiece)
@@ -51,6 +52,8 @@ public struct NodeInfo
         Type = info.Type;
         CurrentValue = info.CurrentValue;
         ObjectType = System.Type.GetType(info.ObjectType);
+        OtherMain = info.OtherMain;
+        OtherSecundary = info.OtherSecundary;
     }
 }
 [Serializable]
@@ -64,6 +67,8 @@ public class SavedNodeInfo
     public NodeFill Type = 0;
     public int CurrentValue = 0;
     public string ObjectType = "";
+    public int OtherMain = -1;
+    public int OtherSecundary = -1;
 
     public SavedNodeInfo(NodeInfo info)
     {
@@ -74,6 +79,8 @@ public class SavedNodeInfo
         PhaseNumber = info.PhaseNumber;
         Type = info.Type;
         CurrentValue = info.CurrentValue;
+        OtherMain = info.OtherMain;
+        OtherSecundary = info.OtherSecundary;
         if (IsHealth)
         {
             ObjectType = "health";
@@ -232,17 +239,19 @@ public class BossBuilder : MonoBehaviour
             }
         } //movement
 
-        foreach (NodeContext condition in _converter.MovementConditions) //cancel movement when piece is dead
+        for (int i = 0; i < _converter.MovementConditions.Count; i++ )//cancel movement when piece is dead
         {
-            string boardLoc = "mainPieceHealth";
-            int index = 0;
-            if (condition.SecundaryIndex > 0)
-            {
-                boardLoc = "secundaryHealth";
-                index = condition.SecundaryIndex - 1;
-            }
+            NodeContext con = _converter.MovementConditions[i];
+            Type type = _conditionTypes[0].GetType();
+            (con.Node as Condition).Setup(CreateCondition(0,con.MainIndex, con.SecundaryIndex, type, true));
 
-            (condition.Node as Condition).Setup(CreateCondition(condition.MainIndex, index, _conditionTypes[0].GetType(),true));
+            _infoList.Add(new NodeInfo()
+            {
+                CreationIndex = i, CurrentValue = 0,
+                MainPiece = con.MainIndex, SecundaryPiece = con.SecundaryIndex,
+                Type = NodeFill.Condition, ObjectType = type,
+                OtherMain = -1,OtherSecundary = -1
+            });
         } // movement condition
 
         for (int i = 0; i < _converter.MainPieces; i++)
@@ -311,14 +320,27 @@ public class BossBuilder : MonoBehaviour
                 var conList = _converter.GetPieceConditions(i, j);
                 for (int k = 0; k < conList.Count; k++)
                 {
-                    string boardLoc = "mainPieceHealth";
-                    int index = 0;
-                    if (j > 0)
+                    Type type = null;
+                    BaseCondition newCon = null;
+                    int randomIndex = 0;
+                    do
                     {
-                        boardLoc = "secundaryHealth";
-                        index = j - 1;
-                    }
-                    (conList[k].Node as Condition).Setup(CreateCondition(i,index, _conditionTypes[Random.Range(0,_conditionTypes.Count)].GetType()));
+                        randomIndex = Random.Range(0, _conditionTypes.Count);
+                        type = _conditionTypes[randomIndex].GetType();
+                        newCon = CreateCondition(randomIndex,i, j, type);
+                    } while (newCon == null); //some conditionstype can not be applicable
+
+
+                    (conList[k].Node as Condition).Setup(newCon);
+         
+
+                    _infoList.Add(new NodeInfo()
+                    {
+                        CreationIndex = k, CurrentValue = randomIndex,
+                        MainPiece = i, SecundaryPiece = j,
+                        Type = NodeFill.Condition, ObjectType = type,
+                        OtherMain = newCon.GetOther().Key, OtherSecundary = newCon.GetOther().Value
+                    });
                 }
 
             }
@@ -691,7 +713,7 @@ public class BossBuilder : MonoBehaviour
         return ability;
     }
 
-    private BaseCondition CreateCondition(int main, int secundary, Type type, bool isMovement = false)
+    private BaseCondition CreateCondition(int typeIndex,int main, int secundary, Type type, bool isMovement = false)
     {
         string boardLocMain = "main";
         string boardLocSecundary = "secundary";
@@ -713,8 +735,11 @@ public class BossBuilder : MonoBehaviour
                     {
                         initList.Add(boardLocSecundary + main + (secundary - 1).ToString());
                     }
-                    initList.Add(boardLocMain + main + "0");
-                    
+                    else
+                    {
+                        initList.Add(boardLocMain + main + "0");
+                    }
+
                     break;
                 case Requirements.MovementOrigin:
                     initList.Add(boardLocMain + main + "0");
@@ -722,6 +747,17 @@ public class BossBuilder : MonoBehaviour
                 case Requirements.PieceIndex:
                     initList.Add(main.ToString());
                     initList.Add(secundary.ToString());
+                    break;
+                case Requirements.OtherRandom:
+                    string random = GetRandomPiece(main,secundary);
+                    if (random == "")
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        initList.Add(random);
+                    }
                     break;
             }
         }
@@ -732,8 +768,78 @@ public class BossBuilder : MonoBehaviour
         }
 
         condition.Setup(_blackBoard, initList);
-        //ability.SetupScripted(_abilityTypes[typeIndex]);
-
+        condition.SetupScripted(_conditionTypes[typeIndex]);
         return condition;
+    }
+
+    private string GetRandomPiece(int main,int secundary)
+    {
+        string boardLocMain = "main";
+        string boardLocSecundary = "secundary";
+        if (_structure.Count < 1)
+        {
+            return "";
+        }
+        else
+        {
+            List<KeyValuePair<int, int>> allPieces = new List<KeyValuePair<int, int>>();
+            int currentMain = -1;
+            int currentSecundary = 1;
+            foreach (var piece in _structure)
+            {
+                if (piece.Key == currentMain)
+                {
+                    allPieces.Add(new KeyValuePair<int, int>(currentMain, currentSecundary));
+                    currentSecundary++;
+                }
+                else
+                {
+                    currentMain++;
+                    currentSecundary = 1;
+                    allPieces.Add(new KeyValuePair<int, int>(currentMain, 0));
+                }
+            }
+
+
+            List<NodeInfo> conditions = _infoList.FindAll(node =>
+            {
+                return node.Type == NodeFill.Condition;
+            });//all currently created conditions except itself
+
+            foreach (NodeInfo info in conditions)
+            {
+                if (info.OtherMain >= 0 && info.OtherSecundary >= 0)
+                {
+                    allPieces.Remove(new KeyValuePair<int, int>(info.MainPiece, info.SecundaryPiece));
+                }
+
+                if (info.MainPiece == main && info.SecundaryPiece == secundary)
+                {
+                    if (info.OtherMain >= 0 && info.OtherSecundary >= 0)
+                    {
+                        return "";
+                    }
+                }
+            }
+
+            allPieces.Remove(new KeyValuePair<int, int>(main, secundary));
+
+            if (allPieces.Count >= 1)
+            {
+                KeyValuePair<int, int> random = allPieces[Random.Range(0, allPieces.Count)];
+                if (random.Value > 0)
+                {
+                    return  boardLocSecundary + random.Key + (random.Value - 1).ToString();
+                }
+                else
+                {
+                    return boardLocMain + random.Key + "0";
+                }
+            }
+            else
+            {
+                return "";
+            }
+        }
     }
 }

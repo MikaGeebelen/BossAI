@@ -22,9 +22,15 @@ public class BlackBoard
     }
     public T GetValue<T>(string name)
     {
+        if (!_blackBoardValues.ContainsKey(name))
+        {
+            Debug.Log("does not contain" + name);
+            return default(T);
+        }
+
         if (_blackBoardValues[name] is T)
         {
-            return (T) _blackBoardValues[name];
+            return (T)_blackBoardValues[name];
         }
         else
         {

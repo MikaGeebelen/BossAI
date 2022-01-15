@@ -228,6 +228,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4666223048535504805, guid: d166119b92e77d14dbf4e2d749e6838e, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6362987833600580350, guid: d166119b92e77d14dbf4e2d749e6838e, type: 3}
       propertyPath: m_Name
       value: HealthBar
@@ -270,11 +274,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8792823350785988417, guid: d166119b92e77d14dbf4e2d749e6838e, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.75
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8792823350785988417, guid: d166119b92e77d14dbf4e2d749e6838e, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.75
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8792823350785988417, guid: d166119b92e77d14dbf4e2d749e6838e, type: 3}
       propertyPath: m_LocalPosition.x

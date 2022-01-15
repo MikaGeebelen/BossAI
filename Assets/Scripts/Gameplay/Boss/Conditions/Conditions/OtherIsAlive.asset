@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179ce368024681d4f94cbfb60281b645, type: 3}
+  m_Name: OtherIsAlive
+  m_EditorClassIdentifier: 
+  _particlePrefab: {fileID: 8663563252492841714, guid: a62239d49e56a5648beb9a1daee4b931, type: 3}

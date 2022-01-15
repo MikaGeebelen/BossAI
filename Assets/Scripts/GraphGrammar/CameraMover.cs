@@ -7,13 +7,24 @@ public class CameraMover : MonoBehaviour
     [SerializeField] private float _sensitivity = 0.1f;
     [SerializeField] private float _borderRange = 10.0f;
 
+    [SerializeField] private Camera _currentCamera = null;
+
     private float _screenWidth = 0;
     private float _screenHeight = 0;
 
     private void Start()
     {
-        _screenWidth = Screen.width;
-        _screenHeight = Screen.height;
+        if (_currentCamera == null)
+        {
+            _screenWidth = Screen.width;
+            _screenHeight = Screen.height;
+        }
+        else
+        {
+            _screenWidth = _currentCamera.scaledPixelWidth;
+            _screenHeight = _currentCamera.scaledPixelHeight;
+        }
+
     }
 
     private void FixedUpdate()

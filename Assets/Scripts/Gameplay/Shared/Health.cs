@@ -32,6 +32,8 @@ public class Health : MonoBehaviour
         get { return _visual; }
     }
 
+    private bool _canTakeDamage = true;
+
     private void Start()
     {
         _currentHealth = _maxHealth;
@@ -45,17 +47,25 @@ public class Health : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        _currentHealth -= damage;
         Damaged.Invoke();
-
-        if (_currentHealth <= 0)
+        if (_canTakeDamage)
         {
-            DiedEvent.Invoke();
+            _currentHealth -= damage;
+            
+            if (_currentHealth <= 0)
+            {
+                DiedEvent.Invoke();
+            }
         }
     }
 
     public void AttachVisual(HealthVisual visual)
     {
         _visual = visual;
+    }
+
+    public void CanTakeDamage(bool CanTakeDamage)
+    {
+        _canTakeDamage = CanTakeDamage;
     }
 }
