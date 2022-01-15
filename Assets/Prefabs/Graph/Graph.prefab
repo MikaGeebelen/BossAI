@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4200757662520588098
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4200757662520588100}
+  - component: {fileID: 4200757662520588099}
+  - component: {fileID: 2261825471880954915}
+  - component: {fileID: 3533321194504245068}
+  m_Layer: 0
+  m_Name: Graph
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4200757662520588100
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4200757662520588098}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4200757662520588099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4200757662520588098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2cf9f9c2b3092409b0e712568db0dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GenerationFinished:
+    m_PersistentCalls:
+      m_Calls: []
+  _visual: {fileID: 0}
+  _points: 300
+  _timeBetweenRules: 1
+  _isPlayMode: 1
+--- !u!114 &2261825471880954915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4200757662520588098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fe65541b6855364383f19ad3b44ab5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _canvas: {fileID: 0}
+  _nodePrefab: {fileID: 3625808619874536856, guid: 820ef5d8bf4dbe34da890c491dc73795, type: 3}
+  _connectionPrefab: {fileID: 2026142387839424792, guid: 91d8e6ef7bfdc144da391462c82c65c4, type: 3}
+  _graph: {fileID: 4200757662520588099}
+  _pointCost: 50
+  _isPlayMode: 1
+--- !u!114 &3533321194504245068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4200757662520588098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d230acd75a585974584fc5580540fdd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _treeStartLoc: {fileID: 0}
+  _nodePrefab: {fileID: 3625808619874536856, guid: 820ef5d8bf4dbe34da890c491dc73795, type: 3}
+  _connectionPrefab: {fileID: 2026142387839424792, guid: 91d8e6ef7bfdc144da391462c82c65c4, type: 3}
+  _NodeDistance: 100
