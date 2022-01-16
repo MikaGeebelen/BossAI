@@ -136,6 +136,7 @@ public struct NodeContext
     public int MainIndex; 
     public int SecundaryIndex;
     public int PhaseNumber;
+    public ITreeNode OtherNode;
 }
 
 public class GraphToBehavior
@@ -360,6 +361,8 @@ public class GraphToBehavior
 
         int phaseNum = 0;
 
+        AbilityNode comboPart1 = null;
+
         //loop till we find final node
         while (current.Type != NodeType.Death)
         {
@@ -380,6 +383,31 @@ public class GraphToBehavior
                     phaseXNodes.Add(new TreeNode(){NodeType = TreeNodeType.Ability});
 
                     Debug.Log("ability for: " + mainIndex + " " + secundaryIndex);
+                    break;
+                case NodeType.ComboAbility:
+                    if (comboPart1 != null)
+                    {
+                        AbilityNode comboNode = new AbilityNode();
+                        NodeContext part1 = _abilityNodes[_abilityNodes.Count - 1];
+                        part1.OtherNode = comboNode;
+                        _abilityNodes.Add(new NodeContext() { MainIndex = mainIndex, SecundaryIndex = secundaryIndex, Node = comboNode, PhaseNumber = phaseNum,OtherNode = comboPart1 });
+                        phaseX.Nodes.Add(comboNode);
+
+                        phaseXNodes.Add(new TreeNode() { NodeType = TreeNodeType.Ability });
+
+                        Debug.Log("comboAbility for: " + mainIndex + " " + secundaryIndex);
+                    }
+                    else
+                    {
+                        comboPart1 = new AbilityNode();
+                        _abilityNodes.Add(new NodeContext() { MainIndex = mainIndex, SecundaryIndex = secundaryIndex, Node = comboPart1, PhaseNumber = phaseNum });
+                        phaseX.Nodes.Add(comboPart1);
+
+                        phaseXNodes.Add(new TreeNode() { NodeType = TreeNodeType.Ability });
+
+                        Debug.Log("comboAbility for: " + mainIndex + " " + secundaryIndex);
+                    }
+
                     break;
                 case NodeType.PhaseStart:
                     if (phaseX != null)
@@ -412,9 +440,8 @@ public class GraphToBehavior
                 //set current node to the not condition node
                 for (int i = 0; i < cons.Count; i++)
                 {
-                    Node conditionNode = GetNodeOfType(cons[i], NodeType.Event);
                     Node modifierNode = GetNodeOfType(cons[i], NodeType.Modifier);
-                    if (conditionNode == null && modifierNode == null)
+                    if ( modifierNode == null)
                     {
                         current = GetOtherNodeFromCon(cons[i], current.Id);
                         if (current.Type == NodeType.Death)

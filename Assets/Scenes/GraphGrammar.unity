@@ -957,6 +957,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sensitivity: 1.5
   _borderRange: 10
+  _currentCamera: {fileID: 0}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0

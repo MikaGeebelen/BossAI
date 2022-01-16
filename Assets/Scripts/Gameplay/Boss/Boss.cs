@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Boss : MonoBehaviour
 {
-    public void SpawnProjectle(GameObject prefab, Vector3 pos,Vector3 rot)
+    public GameObject SpawnProjectle(GameObject prefab, Vector3 pos,Vector3 rot)
     {
         GameObject item = Instantiate(prefab, pos, Quaternion.Euler(rot));
         Damage damage = item.GetComponent<Damage>();
@@ -12,7 +12,7 @@ public class Boss : MonoBehaviour
         {
             damage.AddOwner(gameObject);
         }
-
+        return item;
     }
 
 }

@@ -13,7 +13,8 @@ public enum NodeFill
     SecundaryMovement,
     Ability,
     Condition,
-    Health
+    Health,
+    Combo
 }
 
 public struct NodeInfo
@@ -128,6 +129,10 @@ public class BossBuilder : MonoBehaviour
     [SerializeField] private List<BaseCondition> _conditionTypes = new List<BaseCondition>();
     public List<object> ConditionTypes => _conditionTypes.Cast<object>().ToList();
 
+    [SerializeField] private List<BaseAbility> _comboStarter = new List<BaseAbility>();
+    public List<object> ComboStarter => _comboStarter.Cast<object>().ToList();
+    [SerializeField] private List<BaseAbility> _comboFinisher = new List<BaseAbility>();
+    public List<object> ComboFinisher => _comboFinisher.Cast<object>().ToList();
 
     [SerializeField] private int _points = 1000;
     private List<int> _pointsPerMain = new List<int>();
@@ -178,6 +183,9 @@ public class BossBuilder : MonoBehaviour
         _tree.SetBlackBoard(_blackBoard);
 
         _treeStructure = treeResult.Value;
+
+        bool isCombo = false;
+        int otherComboIndex = 0;
 
         //simple random
         for (int i = 0; i < _converter.MovementNodes.Count; i++)
@@ -261,54 +269,150 @@ public class BossBuilder : MonoBehaviour
                 List<NodeContext> nodes = _converter.GetPieceAbilities(i, j);
                 for (int k = 0; k < nodes.Count; k++)
                 {
-
-                    List<KeyValuePair<BaseAbility,int>> abilityType = new List<KeyValuePair<BaseAbility, int>>();
-                    int canPayCost = 0;
-
-                    int RandomIndex = 0;
-
-                    bool isDynamicMainPiece = false;
-
-                    if (!(j >= 1))
+                    if (nodes[k].OtherNode != null)
                     {
-                        if (_converter.GetPieceMovement(i, j).Count > 0)
+                        if (isCombo)
                         {
-                            isDynamicMainPiece = true;
+                            (nodes[k].Node as AbilityNode).SetupCombo(CreateAbility(i, j, otherComboIndex,
+                                _comboFinisher[otherComboIndex].GetType()),CreateAbility(i,j,0,_abilityTypes[0].GetType()));
+
+
+                            _infoList.Add(new NodeInfo()
+                            {
+                                CreationIndex = k,
+                                CurrentValue = otherComboIndex,
+                                MainPiece = i,
+                                SecundaryPiece = j,
+                                Type = NodeFill.Combo,
+                                ObjectType = _comboFinisher[otherComboIndex].GetType(),
+                                PhaseNumber = nodes[k].PhaseNumber
+                            });
+                            isCombo = false;
+                        }
+                        else
+                        {
+
+                            List<KeyValuePair<BaseAbility, int>> abilityType =
+                                new List<KeyValuePair<BaseAbility, int>>();
+                            int canPayCost = 0;
+
+                            int RandomIndex = 0;
+
+                            bool isDynamicMainPiece = false;
+
+                            if (!(j >= 1))
+                            {
+                                if (_converter.GetPieceMovement(i, j).Count > 0)
+                                {
+                                    isDynamicMainPiece = true;
+                                }
+                            }
+
+                            //try and use all remaining points on abilities, and bosses that can't move can't use specific abilities
+                            do
+                            {
+                                RandomIndex = Random.Range(0, _abilityTypes.Count);
+                                BaseAbility curretnAbility = _comboStarter[RandomIndex];
+                                if (_pointsPerMain[i] > curretnAbility.PointCost || curretnAbility.PointCost < 0)
+                                {
+                                    if (curretnAbility.ChangesPosition && isDynamicMainPiece)
+                                    {
+                                        abilityType.Add(
+                                            new KeyValuePair<BaseAbility, int>(curretnAbility, RandomIndex));
+                                        canPayCost++;
+                                    }
+                                    else if (!curretnAbility.ChangesPosition)
+                                    {
+                                        abilityType.Add(
+                                            new KeyValuePair<BaseAbility, int>(curretnAbility, RandomIndex));
+                                        canPayCost++;
+                                    }
+                                }
+                            } while (canPayCost < 3);
+
+                            abilityType.Sort((type1, type2) =>
+                            {
+                                return type1.Key.PointCost.CompareTo(type2.Key.PointCost);
+                            });
+                            abilityType.Reverse();
+
+                            _pointsPerMain[i] -= abilityType[0].Key.PointCost;
+
+                            otherComboIndex = abilityType[0].Value;
+
+                            (nodes[k].Node as AbilityNode).SetupCombo(CreateAbility(i, j, abilityType[0].Value,
+                                abilityType[0].Key.GetType()), CreateAbility(i, j, 0, _abilityTypes[0].GetType()));
+
+                            _infoList.Add(new NodeInfo()
+                            {
+                                CreationIndex = k,
+                                CurrentValue = abilityType[0].Value,
+                                MainPiece = i,
+                                SecundaryPiece = j,
+                                Type = NodeFill.Combo,
+                                ObjectType = abilityType[0].Key.GetType(),
+                                PhaseNumber = nodes[k].PhaseNumber
+                            });
+
+                            isCombo = true;
                         }
                     }
-
-                    //try and use all remaining points on abilities, and bosses that can't move can't use specific abilities
-                    do
+                    else
                     {
-                        RandomIndex = Random.Range(0, _abilityTypes.Count);
-                        BaseAbility curretnAbility = _abilityTypes[RandomIndex];
-                        if (_pointsPerMain[i] > curretnAbility.PointCost || curretnAbility.PointCost < 0)
+                        List<KeyValuePair<BaseAbility, int>> abilityType = new List<KeyValuePair<BaseAbility, int>>();
+                        int canPayCost = 0;
+
+                        int RandomIndex = 0;
+
+                        bool isDynamicMainPiece = false;
+
+                        if (!(j >= 1))
                         {
-                            if (curretnAbility.ChangesPosition && isDynamicMainPiece)
+                            if (_converter.GetPieceMovement(i, j).Count > 0)
                             {
-                                abilityType.Add(new KeyValuePair<BaseAbility, int>(curretnAbility,RandomIndex));
-                                canPayCost++;
-                            }
-                            else if (!curretnAbility.ChangesPosition)
-                            {
-                                abilityType.Add(new KeyValuePair<BaseAbility, int>(curretnAbility, RandomIndex));
-                                canPayCost++;
+                                isDynamicMainPiece = true;
                             }
                         }
-                    } while (canPayCost < 3);
 
-                    abilityType.Sort((type1, type2) => { return type1.Key.PointCost.CompareTo(type2.Key.PointCost); });
-                    abilityType.Reverse();
+                        //try and use all remaining points on abilities, and bosses that can't move can't use specific abilities
+                        do
+                        {
+                            RandomIndex = Random.Range(0, _abilityTypes.Count);
+                            BaseAbility curretnAbility = _abilityTypes[RandomIndex];
+                            if (_pointsPerMain[i] > curretnAbility.PointCost || curretnAbility.PointCost < 0)
+                            {
+                                if (curretnAbility.ChangesPosition && isDynamicMainPiece)
+                                {
+                                    abilityType.Add(new KeyValuePair<BaseAbility, int>(curretnAbility, RandomIndex));
+                                    canPayCost++;
+                                }
+                                else if (!curretnAbility.ChangesPosition)
+                                {
+                                    abilityType.Add(new KeyValuePair<BaseAbility, int>(curretnAbility, RandomIndex));
+                                    canPayCost++;
+                                }
+                            }
+                        } while (canPayCost < 3);
 
-                    _pointsPerMain[i] -= abilityType[0].Key.PointCost;
+                        abilityType.Sort((type1, type2) =>
+                        {
+                            return type1.Key.PointCost.CompareTo(type2.Key.PointCost);
+                        });
+                        abilityType.Reverse();
 
-                    (nodes[k].Node as AbilityNode).SetAbility(CreateAbility(i,j,abilityType[0].Value,abilityType[0].Key.GetType()));
+                        _pointsPerMain[i] -= abilityType[0].Key.PointCost;
 
-                    _infoList.Add(new NodeInfo()
-                    {
-                        CreationIndex = k, CurrentValue = abilityType[0].Value,
-                        MainPiece = i, SecundaryPiece = j,
-                        Type = NodeFill.Ability, ObjectType = abilityType[0].Key.GetType(),PhaseNumber = nodes[k].PhaseNumber});
+                        (nodes[k].Node as AbilityNode).SetAbility(CreateAbility(i, j, abilityType[0].Value,
+                            abilityType[0].Key.GetType()));
+
+                        _infoList.Add(new NodeInfo()
+                        {
+                            CreationIndex = k, CurrentValue = abilityType[0].Value,
+                            MainPiece = i, SecundaryPiece = j,
+                            Type = NodeFill.Ability, ObjectType = abilityType[0].Key.GetType(),
+                            PhaseNumber = nodes[k].PhaseNumber
+                        });
+                    }
                 }
             }
         } //abilities
@@ -694,8 +798,11 @@ public class BossBuilder : MonoBehaviour
                     {
                         initList.Add(boardLocSecundary + index + (secundaryIndex - 1).ToString());
                     }
+                    else
+                    {
+                        initList.Add(boardLocMain + index + "0");
+                    }
 
-                    initList.Add(boardLocMain + index + "0");
                     break;
                 case Requirements.MovementOrigin:
                     initList.Add(boardLocMain + index + "0");

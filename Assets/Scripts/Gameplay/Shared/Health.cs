@@ -7,9 +7,12 @@ public class Health : MonoBehaviour
 {
     public UnityEvent DiedEvent = new UnityEvent();
     public UnityEvent Damaged = new UnityEvent();
+    public UnityEvent FullEvent = new UnityEvent();
+    public UnityEvent Healed = new UnityEvent();
 
     [SerializeField]private int _maxHealth = 100;
     private int _currentHealth = 0;
+    private bool _died = false;
 
     public int MaxHealth
     {
@@ -51,11 +54,30 @@ public class Health : MonoBehaviour
         if (_canTakeDamage)
         {
             _currentHealth -= damage;
-            
+
+
             if (_currentHealth <= 0)
             {
                 DiedEvent.Invoke();
+                _died = true;
             }
+        }
+    }
+
+    public void Heal(int health)
+    {
+        if (!_died)
+        {
+    
+            _currentHealth += health;
+      
+
+            if (_currentHealth > _maxHealth)
+            {
+                _currentHealth = _maxHealth;
+                FullEvent.Invoke();
+            }
+            Healed.Invoke();
         }
     }
 

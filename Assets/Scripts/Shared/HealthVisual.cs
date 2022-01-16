@@ -19,6 +19,7 @@ public class HealthVisual : MonoBehaviour
         _health = gameObject.GetComponentInParent<Health>();
         _health.AttachVisual(this);
         _health.Damaged.AddListener(VisualUpdate);
+        _health.Healed.AddListener(VisualUpdate);
     }
 
     private void VisualUpdate()
