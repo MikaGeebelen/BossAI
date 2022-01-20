@@ -175,6 +175,7 @@ public class Heal : BaseAbility
         MaxTimeForHeal = heal.MaxTimeForHeal;
         HealIntervals = heal.HealIntervals;
         HealingAmount = heal.HealingAmount;
+        MaxCooldown = heal.MaxCooldown;
 
         ParticlePrefab = heal.ParticlePrefab;
         _maxTimePerInterval = HealIntervals / MaxTimeForHeal;

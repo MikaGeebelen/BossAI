@@ -13,6 +13,7 @@ public enum NodeFill
     SecundaryMovement,
     Ability,
     Condition,
+    MoveCondition,
     Health,
     Combo
 }
@@ -147,6 +148,8 @@ public class BossBuilder : MonoBehaviour
     private List<KeyValuePair<int, Node>> _structure = null;
     private List<TreeNode> _treeStructure = null;
 
+    private bool _loadBoss = false;
+
     public List<NodeInfo> InfoList
     {
         get
@@ -257,7 +260,7 @@ public class BossBuilder : MonoBehaviour
             {
                 CreationIndex = i, CurrentValue = 0,
                 MainPiece = con.MainIndex, SecundaryPiece = con.SecundaryIndex,
-                Type = NodeFill.Condition, ObjectType = type,
+                Type = NodeFill.MoveCondition, ObjectType = type,
                 OtherMain = -1,OtherSecundary = -1
             });
         } // movement condition
@@ -274,7 +277,7 @@ public class BossBuilder : MonoBehaviour
                         if (isCombo)
                         {
                             (nodes[k].Node as AbilityNode).SetupCombo(CreateAbility(i, j, otherComboIndex,
-                                _comboFinisher[otherComboIndex].GetType()),CreateAbility(i,j,0,_abilityTypes[0].GetType()));
+                                _comboFinisher[otherComboIndex].GetType(),true,true),CreateAbility(i,j,0,_abilityTypes[0].GetType()));
 
 
                             _infoList.Add(new NodeInfo()
@@ -311,7 +314,7 @@ public class BossBuilder : MonoBehaviour
                             //try and use all remaining points on abilities, and bosses that can't move can't use specific abilities
                             do
                             {
-                                RandomIndex = Random.Range(0, _abilityTypes.Count);
+                                RandomIndex = Random.Range(0, _comboStarter.Count);
                                 BaseAbility curretnAbility = _comboStarter[RandomIndex];
                                 if (_pointsPerMain[i] > curretnAbility.PointCost || curretnAbility.PointCost < 0)
                                 {
@@ -341,7 +344,7 @@ public class BossBuilder : MonoBehaviour
                             otherComboIndex = abilityType[0].Value;
 
                             (nodes[k].Node as AbilityNode).SetupCombo(CreateAbility(i, j, abilityType[0].Value,
-                                abilityType[0].Key.GetType()), CreateAbility(i, j, 0, _abilityTypes[0].GetType()));
+                                abilityType[0].Key.GetType(),true,false), null);
 
                             _infoList.Add(new NodeInfo()
                             {
@@ -432,7 +435,7 @@ public class BossBuilder : MonoBehaviour
                         randomIndex = Random.Range(0, _conditionTypes.Count);
                         type = _conditionTypes[randomIndex].GetType();
                         newCon = CreateCondition(randomIndex,i, j, type);
-                    } while (newCon == null); //some conditionstype can not be applicable
+                    } while (newCon == null); //some conditionstype might not be applicable
 
 
                     (conList[k].Node as Condition).Setup(newCon);
@@ -488,6 +491,9 @@ public class BossBuilder : MonoBehaviour
             return;
         }
 
+        _loadBoss = true;
+        _blackBoard.AddValue("Player", _player);
+
         //SaveSystem.LoadBossStructure();
         listWrapper<StructureNode> loadedStructure = JsonUtility.FromJson<listWrapper<StructureNode>>(SaveSystem.LoadBossStructure(_inputField.text));
         listWrapper<SavedNodeInfo> loadedInfo = JsonUtility.FromJson<listWrapper<SavedNodeInfo>>(SaveSystem.LoadBossInfo(_inputField.text));
@@ -510,7 +516,7 @@ public class BossBuilder : MonoBehaviour
 
         LoadBossBody(_infoList.FindAll(info => { return info.IsHealth;}));
 
-        List<ITreeNode> movementNodes = _tree.Nodes.FindAll(node => { return (node is MovementNode); });
+        List<ITreeNode> movementNodes = tree.Value.FindAll(node => { return (node is MovementNode); });
         List<NodeInfo> movementInfo = _infoList.FindAll(node =>
         {
             return node.Type == NodeFill.MainMovement || node.Type == NodeFill.SecundaryMovement;
@@ -522,19 +528,173 @@ public class BossBuilder : MonoBehaviour
             movement.SetMovementBehavior(CreateMovement(movementInfo[i].CurrentValue,movementInfo[i].ObjectType, movementInfo[i].MainPiece, movementInfo[i].SecundaryPiece));
         }
 
-        List<ITreeNode> abilityNodes = _tree.Nodes.FindAll(node => { return (node is AbilityNode); });
+        List<ITreeNode> abilityNodes = tree.Value.FindAll(node => { return (node is AbilityNode); });
         List<NodeInfo> abilityInfo = _infoList.FindAll(node =>
         {
-            return node.Type == NodeFill.Ability;
+            return node.Type == NodeFill.Ability || node.Type == NodeFill.Combo;
         });
+
+        abilityInfo.Sort((node1, node2) =>
+        {
+            bool isSec1 = false;
+            bool isSec2 = false;
+
+            if (node1.SecundaryPiece > 0 )
+            {
+                isSec1 = true;
+            }
+
+            if (node2.SecundaryPiece > 0)
+            {
+                isSec2 = true;
+            }
+
+            if (isSec1 && !isSec2)
+            {
+                if (node1.MainPiece == node2.MainPiece)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }else if (!isSec1 && isSec2)
+            {
+                if (node1.MainPiece == node2.MainPiece)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (isSec1 && isSec2)
+            {
+                if (node1.MainPiece == node2.MainPiece)
+                {
+                    return node1.SecundaryPiece.CompareTo(node2.SecundaryPiece);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+        });
+
+
+        bool isSecondPartCombo = false;
 
         for (int i = 0; i < abilityNodes.Count; i++)
         {
             AbilityNode ability = abilityNodes[i] as AbilityNode;
-            ability.SetAbility(CreateAbility(abilityInfo[i].MainPiece, abilityInfo[i].SecundaryPiece, abilityInfo[i].CurrentValue, abilityInfo[i].ObjectType));
+
+            if (abilityInfo[i].Type == NodeFill.Ability)
+            {
+                ability.SetAbility(CreateAbility(abilityInfo[i].MainPiece, abilityInfo[i].SecundaryPiece, abilityInfo[i].CurrentValue, abilityInfo[i].ObjectType));
+            }
+            else
+            {
+                BaseAbility abilityBackup = null;
+                if (isSecondPartCombo)
+                {
+                    abilityBackup = CreateAbility(abilityInfo[i].MainPiece, abilityInfo[i].SecundaryPiece, 0, _abilityTypes[0].GetType());
+                }
+
+                ability.SetupCombo(CreateAbility(abilityInfo[i].MainPiece, abilityInfo[i].SecundaryPiece, abilityInfo[i].CurrentValue, abilityInfo[i].ObjectType,true, isSecondPartCombo), abilityBackup);
+                isSecondPartCombo = true;
+            }
         }
 
-        List<ITreeNode> conditionNodes = _tree.Nodes.FindAll(node => { return (node is Condition); });
+        List<ITreeNode> conditionNodes = tree.Value.FindAll(node => { return (node is Condition); });
+        List<NodeInfo> conditionList = _infoList.FindAll(node =>
+        {
+            return node.Type == NodeFill.Condition;
+        });
+
+        List<NodeInfo> moveCons = _infoList.FindAll(node =>
+        {
+            return node.Type == NodeFill.MoveCondition;
+        });
+
+        conditionList.Sort((node1, node2) =>
+        {
+            bool isSec1 = false;
+            bool isSec2 = false;
+
+            if (node1.SecundaryPiece > 0)
+            {
+                isSec1 = true;
+            }
+
+            if (node2.SecundaryPiece > 0)
+            {
+                isSec2 = true;
+            }
+
+            if (isSec1 && !isSec2)
+            {
+                if (node1.MainPiece == node2.MainPiece)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (!isSec1 && isSec2)
+            {
+                if (node1.MainPiece == node2.MainPiece)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (isSec1 && isSec2)
+            {
+                if (node1.MainPiece == node2.MainPiece)
+                {
+                    return node1.SecundaryPiece.CompareTo(node2.SecundaryPiece);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+        });
+
+        int index = 0;
+        for (int i = 0; i < moveCons.Count; i++)
+        {
+            Condition con = conditionNodes[i] as Condition;
+            con.Setup(CreateCondition(moveCons[i].CurrentValue, moveCons[i].MainPiece, moveCons[i].SecundaryPiece, moveCons[i].ObjectType, true));
+            index = i;
+        }
+
+        if (index != 0)
+        {
+            index++;
+
+        }
+
+        for (int i = index; i < conditionList.Count + index; i++)
+        {
+            Condition con = conditionNodes[i] as Condition;
+            con.Setup(CreateCondition(conditionList[i - index].CurrentValue, conditionList[i - index].MainPiece, conditionList[i - index].SecundaryPiece, conditionList[i - index].ObjectType));
+        }
 
         _behaviorTreeReady = true;
         OnBehaviorComplete.Invoke();
@@ -776,7 +936,7 @@ public class BossBuilder : MonoBehaviour
         return movement;
     }
 
-    private BaseAbility CreateAbility(int index, int secundaryIndex, int typeIndex, Type type)
+    private BaseAbility CreateAbility(int index, int secundaryIndex, int typeIndex, Type type, bool isCombo = false,bool isComboEnd = false)
     {
         string boardLocMain = "main";
         string boardLocSecundary = "secundary";
@@ -815,7 +975,22 @@ public class BossBuilder : MonoBehaviour
         }
 
         ability.Setup(_blackBoard, initList);
-        ability.SetupScripted(_abilityTypes[typeIndex]);
+
+        if (isCombo)
+        {
+            if (!isComboEnd)
+            {
+                ability.SetupScripted(_comboStarter[typeIndex]);
+            }
+            else
+            {
+                ability.SetupScripted(_comboFinisher[typeIndex]);
+            }
+        }
+        else
+        {
+            ability.SetupScripted(_abilityTypes[typeIndex]);
+        }
 
         return ability;
     }
@@ -913,18 +1088,41 @@ public class BossBuilder : MonoBehaviour
                 return node.Type == NodeFill.Condition;
             });//all currently created conditions except itself
 
-            foreach (NodeInfo info in conditions)
+            if (!_loadBoss)
             {
-                if (info.OtherMain >= 0 && info.OtherSecundary >= 0)
-                {
-                    allPieces.Remove(new KeyValuePair<int, int>(info.MainPiece, info.SecundaryPiece));
-                }
-
-                if (info.MainPiece == main && info.SecundaryPiece == secundary)
+                foreach (NodeInfo info in conditions)
                 {
                     if (info.OtherMain >= 0 && info.OtherSecundary >= 0)
                     {
-                        return "";
+                        allPieces.Remove(new KeyValuePair<int, int>(info.MainPiece, info.SecundaryPiece));
+                    }
+
+                    if (info.MainPiece == main && info.SecundaryPiece == secundary)
+                    {
+                        if (info.OtherMain >= 0 && info.OtherSecundary >= 0)
+                        {
+                            return "";
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (NodeInfo info in conditions)
+                {
+                    if (info.MainPiece == main && info.SecundaryPiece == secundary)
+                    {
+                        if (info.OtherMain >= 0 && info.OtherSecundary >= 0)
+                        {
+                            if (info.OtherSecundary > 0)
+                            {
+                                return boardLocSecundary + info.OtherMain + (info.OtherSecundary - 1).ToString();
+                            }
+                            else
+                            {
+                                return boardLocMain + info.OtherMain + "0";
+                            }
+                        }
                     }
                 }
             }

@@ -20,6 +20,7 @@ public class OtherAliveCondition : BaseCondition
 
     private bool _addedVisual = false;
 
+    private bool _otherIsSec = false;
     public override List<Requirements> GetRequirements()
     {
         return new List<Requirements>() {Requirements.PieceIndex,Requirements.Spawner,Requirements.Origin,Requirements.OtherRandom};
@@ -33,6 +34,12 @@ public class OtherAliveCondition : BaseCondition
          GameObject other = board.GetValue<GameObject>(initList[4]);
          _healthComp = other.GetComponent<Health>();
          _defenseLoc = other.transform;
+
+         if (initList[4].Contains("secundary"))
+         {
+             _otherIsSec = true;
+         }
+
 
          string text = initList[4];
          int num = text.IndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
@@ -116,6 +123,12 @@ public class OtherAliveCondition : BaseCondition
 
     public override KeyValuePair<int, int> GetOther()
     {
-        return _otherComp;
+        KeyValuePair<int, int> other = _otherComp;
+        if (_otherIsSec)
+        {
+            other = new KeyValuePair<int, int>(_otherComp.Key, _otherComp.Value + 1);
+        }
+
+        return other;
     }
 }

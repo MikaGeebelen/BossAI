@@ -8,6 +8,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _moveDir = new Vector2();
 
     private Rigidbody2D _rigidbody = null;
+
+    public bool _isSlowed = false;
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -20,6 +22,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-       _rigidbody.velocity = _moveDir * _moveSpeed;
+        if (_isSlowed)
+        {
+            _rigidbody.velocity = _moveDir * _moveSpeed/2.0f;
+        }
+        else
+        {
+            _rigidbody.velocity = _moveDir * _moveSpeed;
+        }
+    }
+
+    public void SetSlow(bool slowDown = true)
+    {
+        _isSlowed = slowDown;
     }
 }

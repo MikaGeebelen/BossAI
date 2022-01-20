@@ -10,7 +10,8 @@ public class BehaviorTree
     {
         Succes,
         Running,
-        Failed
+        Failed,
+        comboFail
     }
 
     //list of all conditions sequances each holding their actions and sequances

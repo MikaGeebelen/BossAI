@@ -15,6 +15,14 @@ public enum TreeNodeType
     Movement
 }
 
+struct TreeNodes
+{
+    public List<Condition> Conditions;
+    public List<AbilityNode> Abilities;
+    public List<MovementNode> Movements;
+}
+
+
 [SerializeField]
 public class TreeNode
 {
@@ -44,6 +52,9 @@ public class TreeNode
 
     public static KeyValuePair<BehaviorTree, List<ITreeNode>> FromJson(string json)
     {
+
+        int abilityGroup = 0;
+
         List<ITreeNode> nodes = new List<ITreeNode>();
         List<ITreeNode> dataRequired = new List<ITreeNode>();
         BehaviorTree tree = new BehaviorTree(nodes);
@@ -126,7 +137,7 @@ public class TreeNode
 
         } while (currentIndex < current.Length);
 
-        return new KeyValuePair<BehaviorTree, List<ITreeNode>>(tree,dataRequired);
+        return new KeyValuePair<BehaviorTree, List<ITreeNode>>(tree, dataRequired);
     }
  }
 
@@ -390,6 +401,8 @@ public class GraphToBehavior
                         AbilityNode comboNode = new AbilityNode();
                         NodeContext part1 = _abilityNodes[_abilityNodes.Count - 1];
                         part1.OtherNode = comboNode;
+                        _abilityNodes[_abilityNodes.Count - 1] = part1;
+
                         _abilityNodes.Add(new NodeContext() { MainIndex = mainIndex, SecundaryIndex = secundaryIndex, Node = comboNode, PhaseNumber = phaseNum,OtherNode = comboPart1 });
                         phaseX.Nodes.Add(comboNode);
 
@@ -431,7 +444,7 @@ public class GraphToBehavior
                     seq = new Sequence(new List<ITreeNode>());
 
                     seqNodes = new List<TreeNode>();
-                    phaseNodes = new List<TreeNode>();
+                    phaseXNodes = new List<TreeNode>();
                     break;
             }
 

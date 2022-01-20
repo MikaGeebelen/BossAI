@@ -34,9 +34,12 @@ public class AbilityNode : ITreeNode
         else
         {
             BehaviorTree.TreeState state =_ability.CastAbility();
-            if (state == BehaviorTree.TreeState.Failed)
+            if (state == BehaviorTree.TreeState.comboFail)
             {
-                return new KeyValuePair<BehaviorTree.TreeState, ITreeNode>(_abilityBackup.CastAbility(), this);
+                if (_abilityBackup != null)
+                {
+                    return new KeyValuePair<BehaviorTree.TreeState, ITreeNode>(_abilityBackup.CastAbility(), this);
+                }
             }
 
             return new KeyValuePair<BehaviorTree.TreeState, ITreeNode>(state, this);

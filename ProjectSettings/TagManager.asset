@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Trap
   - Boss
+  - Fire
   layers:
   - Default
   - TransparentFX

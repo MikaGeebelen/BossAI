@@ -28,7 +28,9 @@ public abstract class BaseComboAbility : BaseAbility
 
         if (!_hasAcces)
         {
-            board.AddValue(_personalAcces, new GameObject(_personalAcces));
+            GameObject newObject = new GameObject(_personalAcces);
+            newObject.AddComponent<UsedInCombo>();
+            board.AddValue(_personalAcces, newObject);
             _hasAcces = true;
         }
     }

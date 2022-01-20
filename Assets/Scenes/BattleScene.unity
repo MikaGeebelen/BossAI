@@ -1031,8 +1031,10 @@ MonoBehaviour:
   _conditionTypes:
   - {fileID: 11400000, guid: 2791b3b185203e344825a335f3019bd4, type: 2}
   - {fileID: 11400000, guid: d805690398da7fa48a0fedd9de474784, type: 2}
-  _comboStarter: []
-  _comboFinisher: []
+  _comboStarter:
+  - {fileID: 11400000, guid: 4fefdccfbd9e0454692bea55c54ea5c2, type: 2}
+  _comboFinisher:
+  - {fileID: 11400000, guid: 35ec962532e94d64bba3456072b38fa8, type: 2}
   _points: 1000
   OnBehaviorComplete:
     m_PersistentCalls:

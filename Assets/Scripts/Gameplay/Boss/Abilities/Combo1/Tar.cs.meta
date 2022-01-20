@@ -3,7 +3,11 @@ guid: 3dedb4a2a5f6f4e488d5b8fb4377b964
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _projectileTar: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  - _floorTar: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  - _floorFire: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  - fireParticle: {fileID: 1013716333633244391, guid: 41139377df603c443b85b3210cf5fa62, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
