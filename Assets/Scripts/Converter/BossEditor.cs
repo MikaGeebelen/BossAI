@@ -8,7 +8,10 @@ public class BossEditor : MonoBehaviour
     [SerializeField] private Transform _content = null;
     [SerializeField] private GameObject _layoutPrefab = null;
     [SerializeField] private GameObject _layoutHealthPrefab = null;
+    [SerializeField] private GameObject _layoutComboPrefab = null;
     [SerializeField] private BossBuilder _bossBuilder = null;
+
+    private BossDefinition _comboDef = new BossDefinition();
 
     private void Start()
     {
@@ -20,6 +23,12 @@ public class BossEditor : MonoBehaviour
         List<NodeInfo> infoList = _bossBuilder.InfoList;
         foreach (NodeInfo nodeInfo in infoList)
         {
+            if (nodeInfo.Type == NodeFill.MoveCondition)
+            {
+                continue;
+            }
+
+
             if (nodeInfo.IsHealth)
             {
                 GameObject newLayout = Instantiate(_layoutHealthPrefab, _content, false);
@@ -27,6 +36,22 @@ public class BossEditor : MonoBehaviour
 
                 BossDefinition def = newLayout.GetComponent<BossDefinition>();
                 def.Setup(_bossBuilder,nodeInfo,new List<object>());
+            }
+            else if (nodeInfo.Type == NodeFill.Combo)
+            {
+                if (_comboDef != null)
+                {
+                    _comboDef.SetupCombo(_bossBuilder, nodeInfo, _bossBuilder.ComboFinisher);
+                    _comboDef = null;
+                }
+                else
+                {
+                    GameObject newLayout = Instantiate(_layoutComboPrefab, _content, false);
+                    newLayout.transform.localScale = Vector3.one;
+
+                    _comboDef = newLayout.GetComponent<BossDefinition>();
+                    _comboDef.SetupCombo(_bossBuilder, nodeInfo, _bossBuilder.ComboStarter);
+                }
             }
             else
             {

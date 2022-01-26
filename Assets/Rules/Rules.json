@@ -1,1 +1,450 @@
-{"Rules":[{"PointCost":150,"StartNodes":[{"Id":0,"Type":0}],"StartConnections":[],"NewNodes":[{"Id":0,"Type":0},{"Id":1,"Type":9},{"Id":2,"Type":7},{"Id":3,"Type":4},{"Id":4,"Type":8}],"NewConnections":[{"StartNode":{"Id":0,"Type":0},"EndNode":{"Id":1,"Type":9}},{"StartNode":{"Id":1,"Type":9},"EndNode":{"Id":2,"Type":7}},{"StartNode":{"Id":2,"Type":7},"EndNode":{"Id":3,"Type":4}},{"StartNode":{"Id":3,"Type":4},"EndNode":{"Id":4,"Type":8}}]},{"PointCost":100,"StartNodes":[{"Id":0,"Type":9}],"StartConnections":[],"NewNodes":[{"Id":0,"Type":9},{"Id":1,"Type":11},{"Id":2,"Type":7},{"Id":3,"Type":4},{"Id":4,"Type":8}],"NewConnections":[{"StartNode":{"Id":0,"Type":9},"EndNode":{"Id":1,"Type":11}},{"StartNode":{"Id":1,"Type":11},"EndNode":{"Id":2,"Type":7}},{"StartNode":{"Id":2,"Type":7},"EndNode":{"Id":3,"Type":4}},{"StartNode":{"Id":3,"Type":4},"EndNode":{"Id":4,"Type":8}}]},{"PointCost":25,"StartNodes":[{"Id":0,"Type":9}],"StartConnections":[],"NewNodes":[{"Id":0,"Type":10},{"Id":1,"Type":13}],"NewConnections":[{"StartNode":{"Id":0,"Type":10},"EndNode":{"Id":1,"Type":13}}]},{"PointCost":25,"StartNodes":[{"Id":0,"Type":11}],"StartConnections":[],"NewNodes":[{"Id":0,"Type":12},{"Id":1,"Type":13}],"NewConnections":[{"StartNode":{"Id":0,"Type":12},"EndNode":{"Id":1,"Type":13}}]},{"PointCost":75,"StartNodes":[{"Id":0,"Type":4},{"Id":1,"Type":8}],"StartConnections":[{"StartNode":{"Id":0,"Type":4},"EndNode":{"Id":1,"Type":8}}],"NewNodes":[{"Id":0,"Type":4},{"Id":1,"Type":4},{"Id":2,"Type":8}],"NewConnections":[{"StartNode":{"Id":0,"Type":4},"EndNode":{"Id":1,"Type":4}},{"StartNode":{"Id":1,"Type":4},"EndNode":{"Id":2,"Type":8}}]},{"PointCost":25,"StartNodes":[{"Id":0,"Type":4}],"StartConnections":[],"NewNodes":[{"Id":0,"Type":4},{"Id":1,"Type":6}],"NewConnections":[{"StartNode":{"Id":0,"Type":4},"EndNode":{"Id":1,"Type":6}}]},{"PointCost":50,"StartNodes":[{"Id":0,"Type":8}],"StartConnections":[],"NewNodes":[{"Id":0,"Type":7},{"Id":1,"Type":4},{"Id":2,"Type":8}],"NewConnections":[{"StartNode":{"Id":0,"Type":7},"EndNode":{"Id":1,"Type":4}},{"StartNode":{"Id":1,"Type":4},"EndNode":{"Id":2,"Type":8}}]},{"PointCost":75,"StartNodes":[{"Id":0,"Type":10}],"StartConnections":[],"NewNodes":[{"Id":0,"Type":10},{"Id":1,"Type":11},{"Id":2,"Type":7},{"Id":3,"Type":4},{"Id":4,"Type":8}],"NewConnections":[{"StartNode":{"Id":0,"Type":10},"EndNode":{"Id":1,"Type":11}},{"StartNode":{"Id":1,"Type":11},"EndNode":{"Id":2,"Type":7}},{"StartNode":{"Id":2,"Type":7},"EndNode":{"Id":3,"Type":4}},{"StartNode":{"Id":3,"Type":4},"EndNode":{"Id":4,"Type":8}}]},{"PointCost":25,"StartNodes":[{"Id":0,"Type":4},{"Id":1,"Type":4}],"StartConnections":[{"StartNode":{"Id":0,"Type":4},"EndNode":{"Id":1,"Type":4}}],"NewNodes":[{"Id":0,"Type":5},{"Id":1,"Type":5}],"NewConnections":[{"StartNode":{"Id":0,"Type":5},"EndNode":{"Id":1,"Type":5}}]}]}
+{
+  "Rules": [
+    {
+      "PointCost": 150,
+      "StartNodes": [
+        {
+          "Id": 0,
+          "Type": 0
+        }
+      ],
+      "StartConnections": [
+      ],
+      "NewNodes": [
+        {
+          "Id": 0,
+          "Type": 0
+        },
+        {
+          "Id": 1,
+          "Type": 9
+        },
+        {
+          "Id": 2,
+          "Type": 7
+        },
+        {
+          "Id": 3,
+          "Type": 4
+        },
+        {
+          "Id": 4,
+          "Type": 8
+        }
+      ],
+      "NewConnections": [
+        {
+          "StartNode": {
+            "Id": 0,
+            "Type": 0
+          },
+          "EndNode": {
+            "Id": 1,
+            "Type": 9
+          }
+        },
+        {
+          "StartNode": {
+            "Id": 1,
+            "Type": 9
+          },
+          "EndNode": {
+            "Id": 2,
+            "Type": 7
+          }
+        },
+        {
+          "StartNode": {
+            "Id": 2,
+            "Type": 7
+          },
+          "EndNode": {
+            "Id": 3,
+            "Type": 4
+          }
+        },
+        {
+          "StartNode": {
+            "Id": 3,
+            "Type": 4
+          },
+          "EndNode": {
+            "Id": 4,
+            "Type": 8
+          }
+        }
+      ]
+    },
+    {
+      "PointCost": 100,
+      "StartNodes": [
+        {
+          "Id": 0,
+          "Type": 9
+        }
+      ],
+      "StartConnections": [
+      ],
+      "NewNodes": [
+        {
+          "Id": 0,
+          "Type": 9
+        },
+        {
+          "Id": 1,
+          "Type": 11
+        },
+        {
+          "Id": 2,
+          "Type": 7
+        },
+        {
+          "Id": 3,
+          "Type": 4
+        },
+        {
+          "Id": 4,
+          "Type": 8
+        }
+      ],
+      "NewConnections": [
+        {
+          "StartNode": {
+            "Id": 0,
+            "Type": 9
+          },
+          "EndNode": {
+            "Id": 1,
+            "Type": 11
+          }
+        },
+        {
+          "StartNode": {
+            "Id": 1,
+            "Type": 11
+          },
+          "EndNode": {
+            "Id": 2,
+            "Type": 7
+          }
+        },
+        {
+          "StartNode": {
+            "Id": 2,
+            "Type": 7
+          },
+          "EndNode": {
+            "Id": 3,
+            "Type": 4
+          }
+        },
+        {
+          "StartNode": {
+            "Id": 3,
+            "Type": 4
+          },
+          "EndNode": {
+            "Id": 4,
+            "Type": 8
+          }
+        }
+      ]
+    },
+    {
+      "PointCost": 25,
+      "StartNodes": [
+        {
+          "Id": 0,
+          "Type": 9
+        }
+      ],
+      "StartConnections": [
+      ],
+      "NewNodes": [
+        {
+          "Id": 0,
+          "Type": 10
+        },
+        {
+          "Id": 1,
+          "Type": 13
+        }
+      ],
+      "NewConnections": [
+        {
+          "StartNode": {
+            "Id": 0,
+            "Type": 10
+          },
+          "EndNode": {
+            "Id": 1,
+            "Type": 13
+          }
+        }
+      ]
+    },
+    {
+      "PointCost": 25,
+      "StartNodes": [
+        {
+          "Id": 0,
+          "Type": 11
+        }
+      ],
+      "StartConnections": [
+      ],
+      "NewNodes": [
+        {
+          "Id": 0,
+          "Type": 12
+        },
+        {
+          "Id": 1,
+          "Type": 13
+        }
+      ],
+      "NewConnections": [
+        {
+          "StartNode": {
+            "Id": 0,
+            "Type": 12
+          },
+          "EndNode": {
+            "Id": 1,
+            "Type": 13
+          }
+        }
+      ]
+    },
+    {
+      "PointCost": 75,
+      "StartNodes": [
+        {
+          "Id": 0,
+          "Type": 4
+        },
+        {
+          "Id": 1,
+          "Type": 8
+        }
+      ],
+      "StartConnections": [
+        {
+          "StartNode": {
+            "Id": 0,
+            "Type": 4
+          },
+          "EndNode": {
+            "Id": 1,
+            "Type": 8
+          }
+        }
+      ],
+      "NewNodes": [
+        {
+          "Id": 0,
+          "Type": 4
+        },
+        {
+          "Id": 1,
+          "Type": 4
+        },
+        {
+          "Id": 2,
+          "Type": 8
+        }
+      ],
+      "NewConnections": [
+        {
+          "StartNode": {
+            "Id": 0,
+            "Type": 4
+          },
+          "EndNode": {
+            "Id": 1,
+            "Type": 4
+          }
+        },
+        {
+          "StartNode": {
+            "Id": 1,
+            "Type": 4
+          },
+          "EndNode": {
+            "Id": 2,
+            "Type": 8
+          }
+        }
+      ]
+    },
+    {
+      "PointCost": 50,
+      "StartNodes": [
+        {
+          "Id": 0,
+          "Type": 8
+        }
+      ],
+      "StartConnections": [
+      ],
+      "NewNodes": [
+        {
+          "Id": 0,
+          "Type": 7
+        },
+        {
+          "Id": 1,
+          "Type": 4
+        },
+        {
+          "Id": 2,
+          "Type": 8
+        }
+      ],
+      "NewConnections": [
+        {
+          "StartNode": {
+            "Id": 0,
+            "Type": 7
+          },
+          "EndNode": {
+            "Id": 1,
+            "Type": 4
+          }
+        },
+        {
+          "StartNode": {
+            "Id": 1,
+            "Type": 4
+          },
+          "EndNode": {
+            "Id": 2,
+            "Type": 8
+          }
+        }
+      ]
+    },
+    {
+      "PointCost": 75,
+      "StartNodes": [
+        {
+          "Id": 0,
+          "Type": 10
+        }
+      ],
+      "StartConnections": [
+      ],
+      "NewNodes": [
+        {
+          "Id": 0,
+          "Type": 10
+        },
+        {
+          "Id": 1,
+          "Type": 11
+        },
+        {
+          "Id": 2,
+          "Type": 7
+        },
+        {
+          "Id": 3,
+          "Type": 4
+        },
+        {
+          "Id": 4,
+          "Type": 8
+        }
+      ],
+      "NewConnections": [
+        {
+          "StartNode": {
+            "Id": 0,
+            "Type": 10
+          },
+          "EndNode": {
+            "Id": 1,
+            "Type": 11
+          }
+        },
+        {
+          "StartNode": {
+            "Id": 1,
+            "Type": 11
+          },
+          "EndNode": {
+            "Id": 2,
+            "Type": 7
+          }
+        },
+        {
+          "StartNode": {
+            "Id": 2,
+            "Type": 7
+          },
+          "EndNode": {
+            "Id": 3,
+            "Type": 4
+          }
+        },
+        {
+          "StartNode": {
+            "Id": 3,
+            "Type": 4
+          },
+          "EndNode": {
+            "Id": 4,
+            "Type": 8
+          }
+        }
+      ]
+    },
+    {
+      "PointCost": 25,
+      "StartNodes": [
+        {
+          "Id": 0,
+          "Type": 4
+        },
+        {
+          "Id": 1,
+          "Type": 4
+        }
+      ],
+      "StartConnections": [
+        {
+          "StartNode": {
+            "Id": 0,
+            "Type": 4
+          },
+          "EndNode": {
+            "Id": 1,
+            "Type": 4
+          }
+        }
+      ],
+      "NewNodes": [
+        {
+          "Id": 0,
+          "Type": 5
+        },
+        {
+          "Id": 1,
+          "Type": 5
+        }
+      ],
+      "NewConnections": [
+        {
+          "StartNode": {
+            "Id": 0,
+            "Type": 5
+          },
+          "EndNode": {
+            "Id": 1,
+            "Type": 5
+          }
+        }
+      ]
+    }
+  ]
+}

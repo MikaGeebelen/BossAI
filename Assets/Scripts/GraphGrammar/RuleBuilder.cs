@@ -166,13 +166,13 @@ public class RuleBuilder : MonoBehaviour
             {
                 TextMeshPro textMesh = _visualStartNodes[index].gameObject
                     .GetComponentInChildren<TextMeshPro>();
-                textMesh.text = "node " + _startNodes[index].CycleType();
+                textMesh.text =  _startNodes[index].CycleType();
             }
             else
             {
                 TextMeshPro textMesh = _visualNewNodes[index].gameObject
                     .GetComponentInChildren<TextMeshPro>();
-                textMesh.text = "node " + _newNodes[index].CycleType();
+                textMesh.text =  _newNodes[index].CycleType();
             }
         }
     }
