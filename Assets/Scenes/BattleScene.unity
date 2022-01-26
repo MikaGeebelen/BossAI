@@ -2641,6 +2641,10 @@ PrefabInstance:
       propertyPath: _bossBuilder
       value: 
       objectReference: {fileID: 470058531}
+    - target: {fileID: 1351667908680792156, guid: f47ec48654a6e9146af88a4e41995c05, type: 3}
+      propertyPath: _layoutComboPrefab
+      value: 
+      objectReference: {fileID: 169211506013025073, guid: f2a2936e562f17c4c83b2d8d4e8b0cf0, type: 3}
     - target: {fileID: 1566294680206269960, guid: f47ec48654a6e9146af88a4e41995c05, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
